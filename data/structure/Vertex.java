@@ -6,6 +6,8 @@ public class Vertex {
     private State state;
     private int jumps;
     private Vertex parent;
+    private int timeEntry;
+    private int timeExit;
 
     public Vertex(String label) {
         this.label = label;
