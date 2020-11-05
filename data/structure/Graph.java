@@ -9,6 +9,8 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//import jdk.javadoc.internal.doclets.formats.html.SourceToHTMLConverter;
+
 public class Graph {
     private boolean directed;
     // private boolean weighted;
@@ -146,6 +148,55 @@ public class Graph {
         }
     }
 
+    public void DFS(Vertex vertex, int timeEntry, int timeExit) {
+        Node<Vertex> iterator = vertexList.getHead();
+        isConnected = false;
+        while (iterator != null) {
+            vertex = iterator.getData();
+            if (vertex.getState().compareTo(State.NO_VISITADO) == 0) {
+                DFS(vertex);
+                componentConnected++;
+                isConnected = componentConnected == 1;
+                timeEntry++;
+                timeExit = timeEntry + 1;
+            }
+            iterator = iterator.getLink();
+        }
+        timeEntry++;
+        timeExit = timeEntry + 1;
+        System.out.println("\nEntrada: " + vertex.getTimeEntry());
+        System.out.println("\nSalida: " + vertex.getTimeExit());
+
+    }
+
+   /* public int dfs2(Graph *g, int v)
+{
+edgenode *p; /* temporary pointer */
+//int y; /* successor vertex */
+//if (finished) return; /* allow for search termination */
+/*discovered[v] = TRUE;
+time = time + 1;
+entry_time[v] = time;
+process_vertex_early(v);
+p = g->edges[v];
+while (p != NULL) {
+y = p->y;
+if (discovered[y] == FALSE) {
+parent[y] = v;
+process_edge(v,y);
+dfs(g,y);
+}
+else if ((!processed[y]) || (g->directed))
+process_edge(v,y);
+if (finished) return;
+p = p->next;
+}
+process_vertex_late(v);
+time = time + 1;
+exit_time[v] = time;
+processed[v] = TRUE;
+}*/
+
     public void shortesPaths() {
         BFS(vertexList.getHead().getData());
         System.out.println("Caminos cortos");
@@ -188,10 +239,6 @@ public class Graph {
             }
         }
         return shortPath;
-    }
-
-    public void DFS() {
-
     }
 
     public void printGraph() {

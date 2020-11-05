@@ -15,6 +15,21 @@ public class Vertex {
         edges = new ListLinked<>();
         state = State.NO_VISITADO;
     }
+    public void setTimeEntry(int timeEntry) {
+        this.timeEntry = timeEntry;
+    }
+
+    public int getTimeEntry() {
+        return timeEntry;
+    }
+
+    public void setTimeExit(int timeExit) {
+        this.timeExit = timeExit;
+    }
+
+    public int getTimeExit() {
+        return timeExit;
+    }
 
     public void setParent(Vertex parent) {
         this.parent = parent;
