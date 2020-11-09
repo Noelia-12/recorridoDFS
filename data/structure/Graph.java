@@ -3,11 +3,15 @@ package data.structure;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+//import jdk.javadoc.internal.doclets.formats.html.SourceToHTMLConverter;
+//import sun.jvm.hotspot.oops.Oops Printer;
 
 //import jdk.javadoc.internal.doclets.formats.html.SourceToHTMLConverter;
 
@@ -16,10 +20,13 @@ public class Graph {
     // private boolean weighted;
     private ListLinked<Vertex> vertexList;
     private Vertex[] vertexs;
+    private ListLinked<Edge> edgesList;
     private int numVertexs;
 
     private boolean isConnected;
     private int componentConnected;
+    private int time;
+	//private PriorityQueque<Vertex> queque2;
 
     public Graph(boolean directed) {
         this.directed = directed;
@@ -73,7 +80,7 @@ public class Graph {
         }
     }
 
-    public void DFS(Vertex vertex) {
+    public void DFS_Stack(Vertex vertex) {
         ListLinked<Vertex> travelBFS = new ListLinked<>();
         // Queue<Vertex> queue = new LinkedList<>();// estructura de datos cola
         Stack<Vertex> stack = new Stack<>();
@@ -148,7 +155,7 @@ public class Graph {
         }
     }
 
-    public void DFS(Vertex vertex, int timeEntry, int timeExit) {
+    /*public void DFS(Vertex vertex, int timeEntry, int timeExit) {
         Node<Vertex> iterator = vertexList.getHead();
         isConnected = false;
         while (iterator != null) {
@@ -167,35 +174,117 @@ public class Graph {
         System.out.println("\nEntrada: " + vertex.getTimeEntry());
         System.out.println("\nSalida: " + vertex.getTimeExit());
 
+    }*/
+
+   /*public void DFS(Vertex vertex, ListLinked<Vertex>travelDFS)
+    {
+        vertex.setStatus(State.VISITADO);
+        travelDFS.add(vertex);
+        vertex.setTimeEntry(time);
+        time++;
+        Node<Edge> nEdge = vertex.getEdges().getHead();
+        while(nEdge!= null)
+        {
+            if(oppositeVertex.getState().compareTo(State.NO_VISITADO)==0)
+            {
+                nEdge.getData().setType(TypeEdge.TREE);
+                System.out.println(nEdge.getData());
+                DFS(oppositeVertex,travelDFS);
+
+            }
+            else if(oppositeVertex.getState().compareTo(State.PROCESADO)==0)
+            {
+                nEdge.getData().setType(TypeEdge.LATER);
+                System.out.println(nEdge.getData());
+            }
+            nEdge = nEdge.getLink();
+        }
+        vertex.setStatus(State.PROCESADO);
+        vertex.setTimeExit(time);
+        time++;
+
+    }
+    public void DFS(Vertex vertex)
+    {
+        LinkedList<Vertex>travelDFS = new LinkedList<>();
+        time = 0;
+        DFS(vertexStart, travelDFS);
+        Node<Vertex>nVertex = travelDFS.getHead();
+        while(nVertex != null)
+        {
+            Vertex vertex = nVertex.getData();
+            System.out.println(vertex.getLabel() + " i(" + vertex.getTimeEntry() +") o ( " + vertex.getTimeExit() + ") state ( " + vertex.getState() + ")");
+            nVertex = nVertex.getLink();
+        }
+    }*/
+
+    
+    public void Vertice_Articulation(Vertex vertex){
+        Vertex act;
+        vertex.setStatus(State.VISITADO);
+        vertex.setEntrada(time+1);
+        vertex.setSalida(time+1);
+        int cantidad = 0;
+        Node<Edge> near = vertex.getEdges().getHead(); //para los cercanos
+         
+        while(near != null){
+            act = near.getData().getV2();
+            if(act.getState().compareTo(State.NO_VISITADO) == 0){
+                cantidad = cantidad + 1;
+                act.setParent(vertex);
+                //de forma recursiva
+                Vertice_Articulation(act);
+                vertex.setBajo(Math.min(vertex.getBajo(), act.getBajo()));
+
+                if((vertex.getParent() == null && cantidad > 1) || (vertex.getParent() != null && act.getBajo() >= vertex.getEntrada()))
+                {
+                    Vertice_Articulation(vertex); //a la lista de los vertices que creamos al principio
+                }
+            }
+            near = near.getLink(); //pasamos al siguiente
+        }
     }
 
-   /* public int dfs2(Graph *g, int v)
-{
-edgenode *p; /* temporary pointer */
-//int y; /* successor vertex */
-//if (finished) return; /* allow for search termination */
-/*discovered[v] = TRUE;
-time = time + 1;
-entry_time[v] = time;
-process_vertex_early(v);
-p = g->edges[v];
-while (p != NULL) {
-y = p->y;
-if (discovered[y] == FALSE) {
-parent[y] = v;
-process_edge(v,y);
-dfs(g,y);
-}
-else if ((!processed[y]) || (g->directed))
-process_edge(v,y);
-if (finished) return;
-p = p->next;
-}
-process_vertex_late(v);
-time = time + 1;
-exit_time[v] = time;
-processed[v] = TRUE;
-}*/
+
+ public void Dijkstra(Vertex vertex)
+ {
+     vertex.setStatus(State.VISITADO);
+     PriorityQueue<Vertex> queque = new PriorityQueue<>();
+        queque.offer(vertex);
+        while(!queque.isEmpty())
+        { Vertex minWeiVertex =queque.poll();
+            minWeiVertex.setStatus(State.PROCESADO);
+            //System.out.println(minWeiVertex.getLabel() + " " + minWeiVertex.getSate());
+            Node<Edge> nEdge = minWeiVertex.getEdges().getHead();
+            while(nEdge != null)
+            {
+                Edge edge = nEdge.getData();
+                Vertex opposite = edge.getV2();
+                double pathCost = edge.getWeight() + minWeiVertex.getDijkstraValue();
+                if(opposite.getState().compareTo(State.NO_VISITADO) == 0)
+                {
+                    opposite.setStatus(State.VISITADO);
+                    opposite.setDijkstraValue(pathCost);
+                    opposite.setParent(minWeiVertex);
+                    queque.offer(opposite);
+
+                }
+                else if(opposite.getState().compareTo(State.VISITADO)==0)
+                {
+                    if(opposite.getDijkstraValue() > pathCost)
+                    {
+                        opposite.setDijkstraValue(pathCost);
+                        opposite.setParent(minWeiVertex);
+                    }
+
+                }
+            }
+            System.out.println(opposite.getLabel() +  "" + opposite.getState() + " " + opposite.getDijkstraValue());
+            
+        }
+
+
+ }
 
     public void shortesPaths() {
         BFS(vertexList.getHead().getData());

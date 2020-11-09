@@ -8,13 +8,61 @@ public class Vertex {
     private Vertex parent;
     private int timeEntry;
     private int timeExit;
+    private double dijkstraValue;
+    private int entrada;
+    private int salida;
+private int bajo;
 
     public Vertex(String label) {
         this.label = label;
         this.jumps = 0;
+        timeEntry = 0;
+        timeExit = 0;
+        entrada = 0;
+        salida = 0;
+        dijkstraValue = 0;
+
         edges = new ListLinked<>();
         state = State.NO_VISITADO;
     }
+
+    public  void setDijkstraValue(double dijkstraValue)
+    {
+        this.dijkstraValue = dijkstraValue;
+    }
+
+    
+    public  double getDijkstraValue()
+    {
+       return dijkstraValue;
+    }
+
+
+    public  int getBajo()
+    {
+       return bajo;
+    }
+
+    public void setBajo(int bajo) {
+        this.bajo= bajo;
+    }
+    public void setEntrada(int entrada) {
+        this.entrada = entrada;
+    }
+
+    public int getEntrada() {
+        return entrada;
+    }
+
+    public void setSalida(int salida) {
+        this.salida= salida;
+    }
+
+    public int getSalida() {
+        return salida;
+    }
+
+
     public void setTimeEntry(int timeEntry) {
         this.timeEntry = timeEntry;
     }
